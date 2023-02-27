@@ -1,7 +1,10 @@
-from django.contrib import admin
 from django.urls import path
+from rest_framework import routers
 
 from ads import views
+
+router = routers.SimpleRouter()
+router.register('', views.CategoryView)
 
 urlpatterns = [
     path('', views.AdsListView.as_view()),
@@ -12,4 +15,6 @@ urlpatterns = [
     path('upload/<int:pk>',views.AdImageUpload.as_view()),
 
 ]
+
+urlpatterns += router.urls
 

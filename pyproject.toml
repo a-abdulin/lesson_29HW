@@ -1,14 +1,13 @@
 [tool.poetry]
-name = "lesson-28-hw"
+name = "lesson-29"
 version = "0.1.0"
 description = ""
 authors = ["a-abdulin <abdulin@list.ru>"]
 readme = "README.md"
-packages = [{include = "lesson_28_hw"}]
+packages = [{include = "lesson_29"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
-pillow = "^9.4.0"
 
 
 [build-system]

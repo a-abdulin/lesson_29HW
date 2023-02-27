@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'ads',
 
 ]
@@ -49,6 +50,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 ]
 
 ROOT_URLCONF = 'dj_project.urls'
@@ -83,7 +85,7 @@ DATABASES = {
         "NAME": os.environ.get("POSTGRES_NAME", "postgres"),
         "PORT": os.environ.get("DB_PORT", "5432"),
         "USER": os.environ.get("DB_USER", "postgres"),
-        "PASSWORD": os.environ.get("DB_PASSWORD", "skypro_l28"),
+        "PASSWORD": os.environ.get("DB_PASSWORD", "postgres"),
     },
 }
 
