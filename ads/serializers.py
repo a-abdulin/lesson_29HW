@@ -18,7 +18,22 @@ class LocationSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    location_id = serializers.SlugRelatedField(slug_field="name", queryset=Location.objects.all())
 
+    class Meta:
+        model = User
+        exclude = ['password']
+
+class UserListSerializer(serializers.ModelSerializer):
+    location_id = serializers.SlugRelatedField(slug_field="name", queryset=Location.objects.all())
+    t_ads = serializers.IntegerField()
+    # t_ads = User.objects.filter(ads__is_published=True).count()
+
+    class Meta:
+        model = User
+        exclude = ['password']
+
+class UserCUDSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = '__all__'

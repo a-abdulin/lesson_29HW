@@ -3,7 +3,7 @@ from django.db.models import Q
 from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import  ListView, UpdateView
+from django.views.generic import ListView, UpdateView
 from rest_framework import viewsets
 from rest_framework import generics
 
@@ -39,11 +39,11 @@ class AdsListView(ListView):
 
         self.object_list = self.object_list.order_by('-price')
 
-        cat_id = request.GET.get("cat", None)
-        if cat_id and cat_id.isdigit():
-            if not self.object_list.filter(category_id__exact=cat_id):
+        cat_ids = request.GET.getlist("cat", [])
+        if cat_ids:
+            if not self.object_list.filter(category_id__in=cat_ids):
                 return JsonResponse({"error": "No cat_id", "status": 200})
-            self.object_list = self.object_list.filter(category_id__exact=cat_id)
+            self.object_list = self.object_list.filter(category_id__in=cat_ids)
 
         text = request.GET.get("text", None)
         if text:
