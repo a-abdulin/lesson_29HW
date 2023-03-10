@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from ads.models import Category, Location, User, ADS
+from ads.models import Category, Location, User, ADS, Selection
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -27,7 +27,6 @@ class UserSerializer(serializers.ModelSerializer):
 class UserListSerializer(serializers.ModelSerializer):
     location_id = serializers.SlugRelatedField(slug_field="name", queryset=Location.objects.all())
     t_ads = serializers.IntegerField()
-    # t_ads = User.objects.filter(ads__is_published=True).count()
 
     class Meta:
         model = User
@@ -37,6 +36,15 @@ class UserCUDSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = '__all__'
+
+    def create(self, validated_data):
+        user = super().create(validated_data)
+
+        user.set_password(user.password)
+        user.save()
+
+        return user
+
 
 class LocationNameSerializer(serializers.ModelSerializer):
 
@@ -58,4 +66,19 @@ class ADSSerializer(serializers.ModelSerializer):
         model = ADS
         fields = ('id', 'name', 'author_id', 'price', 'description',
                 'is_published', 'image', 'category_id')
+
+
+class ADSSelSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ADS
+        fields = ('id', 'name', 'author_id', 'description',
+                'is_published', 'image', 'category_id')
+
+class SelectionSerializer(serializers.ModelSerializer):
+    items = ADSSelSerializer(many=True)
+
+    class Meta:
+        model = Selection
+        fields = ['id', 'name', 'items']
 

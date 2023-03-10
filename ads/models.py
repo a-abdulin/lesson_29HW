@@ -1,3 +1,4 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
@@ -17,12 +18,13 @@ class Location(models.Model):
         return self.name
 
 
-class User(models.Model):
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
-    username = models.CharField(max_length=50)
-    password = models.CharField(max_length=20)
-    role = models.CharField(max_length=20)
+class User(AbstractUser):
+    MEMBER = "member"
+    ADMIN = "admin"
+    MODERATOR = "moderator"
+    ROLES = [(MEMBER, "member"), (ADMIN, "admin"), (MODERATOR, "moderator")]
+
+    role = models.CharField(max_length=20, choices=ROLES, default=MEMBER)
     age = models.SmallIntegerField()
     location_id = models.ForeignKey(Location, on_delete=models.CASCADE)
 
@@ -50,3 +52,18 @@ class ADS(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Selection(models.Model):
+    name = models.CharField(max_length=150)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    items = models.ManyToManyField(ADS)
+
+    class Meta:
+        verbose_name = "Подборка"
+        verbose_name_plural = "Подборки"
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+

@@ -6,9 +6,12 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, UpdateView
 from rest_framework import viewsets
 from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
 
-from ads.models import Category, ADS, Location
-from ads.serializers import CategorySerializer, ADSSerializer, LocationSerializer
+from ads.models import Category, ADS, Location, Selection
+from ads.permissions.ad import IsADOwner
+from ads.permissions.selection import IsOwner
+from ads.serializers import CategorySerializer, ADSSerializer, LocationSerializer, SelectionSerializer
 from dj_project import settings
 
 
@@ -21,18 +24,19 @@ def root(request):
 class CategoryView(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    permission_classes = [IsAuthenticated]
 
 
-@method_decorator(csrf_exempt, name='dispatch')
 class LocationView(viewsets.ModelViewSet):
     queryset = Location.objects.all()
     serializer_class = LocationSerializer
+    permission_classes = [IsAuthenticated]
 
 
-@method_decorator(csrf_exempt, name='dispatch')
 class AdsListView(ListView):
     queryset = ADS.objects.all()
     serializer_class = ADSSerializer
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         super().get(request, *args, **kwargs)
@@ -89,24 +93,24 @@ class AdsCreateView(generics.CreateAPIView):
     serializer_class = ADSSerializer
 
 
-@method_decorator(csrf_exempt, name='dispatch')
 class AdsUpdateView(generics.UpdateAPIView):
     queryset = ADS.objects.all()
     serializer_class = ADSSerializer
+    permission_classes = [IsAuthenticated, IsADOwner]
 
 
-@method_decorator(csrf_exempt, name='dispatch')
 class AdsDeleteView(generics.DestroyAPIView):
     queryset = ADS.objects.all()
     serializer_class = ADSSerializer
+    permission_classes = [IsAuthenticated, IsADOwner]
 
 
 class AdsDetailView(generics.RetrieveAPIView):
     queryset = ADS.objects.all()
     serializer_class = ADSSerializer
+    permission_classes = [IsAuthenticated]
 
 
-@method_decorator(csrf_exempt, name='dispatch')
 class AdImageUpload(UpdateView):
     model = ADS
     fields = ["name", "author_id", "price", "description", "is_published"]
@@ -117,4 +121,33 @@ class AdImageUpload(UpdateView):
         self.object.save()
 
         return JsonResponse({"name": self.object.name, "image": self.object.image.url})
+
+
+class SelectionCreateView(generics.CreateAPIView):
+    queryset = Selection.objects.all()
+    serializer_class = SelectionSerializer
+    permission_classes = [IsAuthenticated]
+
+class SelectionListView(generics.ListAPIView):
+    queryset = Selection.objects.all()
+    serializer_class = SelectionSerializer
+    permission_classes = [IsAuthenticated]
+
+
+class SelectionUpdateView(generics.UpdateAPIView):
+    queryset = Selection.objects.all()
+    serializer_class = SelectionSerializer
+    permission_classes = [IsAuthenticated, IsOwner]
+
+
+class SelectionDetailedView(generics.RetrieveAPIView):
+    queryset = Selection.objects.all()
+    serializer_class = SelectionSerializer
+    permission_classes = [IsAuthenticated]
+
+
+class SelectionDeleteView(generics.DestroyAPIView):
+    queryset = Selection.objects.all()
+    serializer_class = SelectionSerializer
+    permission_classes = [IsAuthenticated, IsOwner]
 
