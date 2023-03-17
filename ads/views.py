@@ -11,7 +11,8 @@ from rest_framework.permissions import IsAuthenticated
 from ads.models import Category, ADS, Location, Selection
 from ads.permissions.ad import IsADOwner
 from ads.permissions.selection import IsOwner
-from ads.serializers import CategorySerializer, ADSSerializer, LocationSerializer, SelectionSerializer
+from ads.serializers import CategorySerializer, ADSSerializer, LocationSerializer, SelectionSerializer, \
+    ADSCreateSerializer
 from dj_project import settings
 
 
@@ -88,9 +89,11 @@ class AdsListView(ListView):
         return JsonResponse(response, safe=False)
 
 
+
+
 class AdsCreateView(generics.CreateAPIView):
     queryset = ADS.objects.all()
-    serializer_class = ADSSerializer
+    serializer_class = ADSCreateSerializer
 
 
 class AdsUpdateView(generics.UpdateAPIView):

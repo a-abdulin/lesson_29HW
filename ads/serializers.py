@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from ads.models import Category, Location, User, ADS, Selection
+from ads.validators import create_not_true
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -58,6 +59,17 @@ class UserNameSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'location_id']
+
+
+class ADSCreateSerializer(serializers.ModelSerializer):
+    author_id = UserNameSerializer(read_only=True)
+    is_published = serializers.BooleanField(validators=[create_not_true], required=False)
+
+    class Meta:
+        model = ADS
+        fields = ('id', 'name', 'author_id', 'price', 'description',
+                  'is_published', 'image', 'category_id')
+
 
 class ADSSerializer(serializers.ModelSerializer):
     author_id = UserNameSerializer(read_only=True)
